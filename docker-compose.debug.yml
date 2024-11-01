@@ -1,0 +1,18 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+version: '3.4'
+
+services:
+  BookStoreMVC:
+    image: BookStoreMVC
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        - configuration=Debug
+    ports:
+      - 5175:5175
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ~/.vsdbg:c:\remote_debugger:rw

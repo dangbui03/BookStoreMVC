@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BookStoreMVC</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BookStoreMVC.styles.css" asp-append-version="true" />
+    <Link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="bg-white top-0 w-full shadow-lg">
+        <nav class="mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center h-full gap-x-[34px]">
+                    <a class="text-xl md:text-2xl font-bold text-gray-800" asp-area="" asp-controller="Home" asp-action="Index">AI Learner</a>
+                    <div class="hidden md:flex gap-3 md:gap-5"> 
+                        <a class="text-gray-800 hover:text-blue-800" asp-area="" asp-controller="Employee" asp-action="Index">Employee</a>
+                        <a class="text-gray-800 hover:text-blue-800" asp-area="" asp-controller="Home" asp-action="Index">Machine Learning</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4 ">
+                    <a class="block border border-blue-900 text-gray-800 hover:text-blue-800 font-medium p-2 rounded-lg" asp-area="" asp-controller="Home" asp-action="Privacy">Sign In</a>
+                    <a class="block border border-blue-800 bg-blue-600 text-white font-medium hover:text-blue-800 p-2 rounded-lg" asp-area="" asp-controller="First" asp-action="Info">Sign Up</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3 flex-auto">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - BookStoreMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

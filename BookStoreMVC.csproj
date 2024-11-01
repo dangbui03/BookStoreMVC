@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<UpToDateCheckBuilt Include="wwwroot/css/site.css" Set="Css" />
+		<UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	    <PrivateAssets>all</PrivateAssets>
+	  </PackageReference>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	    <PrivateAssets>all</PrivateAssets>
+	  </PackageReference>
+	  <PackageReference Include="MySqlConnector" Version="2.3.7" />
+	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="AllFiles\" />
+	</ItemGroup>
+
+	<Target Name="Tailwind" BeforeTargets="Build">
+		<Exec Command="npm run css:build" />
+	</Target>
+
+</Project>
