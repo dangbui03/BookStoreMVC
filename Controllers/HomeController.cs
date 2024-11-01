@@ -42,6 +42,29 @@ namespace BookStoreMVC.Controllers
             }
         }
 
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+
+        public async Task<IActionResult> Download(string filename)
+        {
+            if (filename == null)
+                return Content("filename is not available");
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "AllFiles", filename);
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, GetContentType(path), Path.GetFileName(path));
+        }
+
         public IActionResult Privacy()
         {
             return View();
