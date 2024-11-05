@@ -12,6 +12,6 @@ namespace BookStoreMVC.Data
 
         public DbSet<Employee> Employee { get; set; }
         public DbSet<Book> Book { get; set; }
-        public List<FileBook> Files { get; set; } = new List<FileBook>();
+        public DbSet<FileBook> Files { get; set; }
     }
 }

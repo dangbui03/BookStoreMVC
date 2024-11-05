@@ -6,5 +6,8 @@
         public string Name { get; set; }   // Tên file
         public string Path { get; set; }   // Đường dẫn lưu trữ file trên server
         public DateTime UploadedDate { get; set; } // Ngày tải lên
+
+        // Thuộc tính liên kết với Book
+        public Book Book { get; set; }
     }
 }
