@@ -7,8 +7,9 @@
     <h1 class="display-4">Welcome</h1>
 </div>
 
+@* 
 <form method="post" enctype="multipart/form-data">
-    <input type="file" name="file" multiple/>
+    <input type="file" name="file" multiple accept=".docx, .pdf, .txt "/>
     <button type="submit">Upload File</button>
 </form>
 @if(ViewBag.Message != null)
@@ -37,4 +38,4 @@
 else
 {
     <p>No files available.</p>
-}
+} *@

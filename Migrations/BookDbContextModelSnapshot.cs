@@ -53,8 +53,7 @@ namespace BookStoreMVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FileDetailsId")
-                        .IsUnique();
+                    b.HasIndex("FileDetailsId");
 
                     b.ToTable("Book");
                 });
@@ -98,11 +97,27 @@ namespace BookStoreMVC.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Extension")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UploadBy")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -117,18 +132,12 @@ namespace BookStoreMVC.Migrations
             modelBuilder.Entity("BookStoreMVC.Models.Book", b =>
                 {
                     b.HasOne("BookStoreMVC.Models.FileBook", "FileDetails")
-                        .WithOne("Book")
-                        .HasForeignKey("BookStoreMVC.Models.Book", "FileDetailsId")
+                        .WithMany()
+                        .HasForeignKey("FileDetailsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FileDetails");
-                });
-
-            modelBuilder.Entity("BookStoreMVC.Models.FileBook", b =>
-                {
-                    b.Navigation("Book")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
