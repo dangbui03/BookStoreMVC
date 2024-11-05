@@ -10,6 +10,7 @@ namespace BookStoreMVC.Controllers
         private readonly ILogger<HomeController> _logger;
         
         private readonly FileUploadServices _fileuploadeservices;
+        
 
         public HomeController(ILogger<HomeController> logger, FileUploadServices fileUploadServices)
         {
@@ -27,6 +28,7 @@ namespace BookStoreMVC.Controllers
         {
             try
             {
+                var files = ;
                 if (await _fileuploadeservices.UploadFile(file))
                 {
                     ViewBag.Message = "File Uploaded Successfully";
@@ -47,6 +49,24 @@ namespace BookStoreMVC.Controllers
             var types = GetMimeTypes();
             var ext = Path.GetExtension(path).ToLowerInvariant();
             return types[ext];
+        }
+
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/vnd.ms-word"},
+                {".docx", "application/vnd.ms-word"},
+                {".xls", "application/vnd.ms-excel"},
+                {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
+                {".csv", "text/csv"}
+            };
         }
 
         public async Task<IActionResult> Download(string filename)

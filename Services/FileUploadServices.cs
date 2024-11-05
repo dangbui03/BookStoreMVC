@@ -1,10 +1,20 @@
 ﻿using BookStoreMVC.Interfaces;
 using System.IO;
+using BookStoreMVC.Data;
+using BookStoreMVC.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreMVC.Services
 {
     public class FileUploadServices : IFileUpload
     {
+        private readonly BookDbContext _context;
+
+        public FileUploadServices(BookDbContext context)
+        {
+            _context = context;
+        }
+
         public async Task<bool> UploadFile(IFormFile file)
         {
             string path = Path.Combine(Environment.CurrentDirectory, "AllFiles");
@@ -29,6 +39,22 @@ namespace BookStoreMVC.Services
                     await file.CopyToAsync(filestream);
                 }
 
+                //var fileDetails = new FileBook
+                //{
+                //    Name = file.FileName,
+                //    Path = path,
+                //    UploadedDate = DateTime.Now
+                //};
+
+                //// Lưu thông tin file vào database
+                //_context.Files.Add(fileDetails);
+                //await _context.SaveChangesAsync();
+
+                //// Liên kết FileDetails với Book
+                //book.FileDetailsId = fileDetails.Id;
+                //_context.Book.Add(book);
+                //await _context.SaveChangesAsync();
+  
                 return true;
             }
             catch (IOException ioEx)

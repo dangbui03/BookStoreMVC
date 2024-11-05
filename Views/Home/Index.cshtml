@@ -1,4 +1,5 @@
-﻿@{
+﻿@model BookStoreMVC.Data.BookDbContext
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -7,7 +8,7 @@
 </div>
 
 <form method="post" enctype="multipart/form-data">
-    <input type="file" name="file"/>
+    <input type="file" name="file" multiple/>
     <button type="submit">Upload File</button>
 </form>
 @if(ViewBag.Message != null)
@@ -15,4 +16,25 @@
     <div class="alert" style="margin-top:26px">
         @ViewBag.Message
     </div>
+}
+
+<p style="margin-top: 50px">List of Files</p>
+@if (Model?.Files != null)
+{
+    <!-- Get all the files from the server -->
+    <ul>
+        @foreach (var item in Model.Files)
+        {
+            <li>
+                <a asp-action="Download"
+                   asp-route-filename="@item.Name">
+                    @item.Name
+                </a>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No files available.</p>
 }
