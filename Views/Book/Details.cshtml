@@ -13,11 +13,11 @@
                 <input type="file" name="file" class="form-control" multiple accept=".docx, .pdf, .txt "/>
             </div>
             <div class="col-md-6">
-                <label asp-for="Path"></label>
-                <input type="text" class="form-control" />
+                <label asp-for="Description"></label>
+                <input type="text" asp-for="Description" class="form-control" />
             </div>
             <div class="col-md-6">
-                <button type="submit" class="btn btn-primary">Upload File</button>
+                <button type="submit" class="btn btn-primary mt-5">Upload File</button>
             </div>
         </div>
     </form>
@@ -34,6 +34,9 @@ else {
             <th>@Html.DisplayNameFor(Model => Model.Id)</th>
             <th>@Html.DisplayNameFor(Model => Model.Name)</th>
             <th>@Html.DisplayNameFor(Model => Model.Extension)</th>
+            <th>@Html.DisplayNameFor(Model => Model.Type)</th>
+            <th>@Html.DisplayNameFor(Model => Model.Description)</th>
+            <th>@Html.DisplayNameFor(Model => Model.UploadedDate)</th>
         </tr>
     </thead>
     <tbody>
@@ -43,6 +46,9 @@ else {
                 <th>@fileBook.Id</th>
                 <th>@fileBook.Name</th>
                 <th>@fileBook.Extension</th>
+                <th>@fileBook.Type</th>
+                <th>@fileBook.Description</th>
+                <th>@fileBook.UploadedDate</th>
             </tr>
         }
     </tbody>

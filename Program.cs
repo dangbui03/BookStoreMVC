@@ -1,18 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using BookStoreMVC.Interfaces;
-using BookStoreMVC.Services;
 using BookStoreMVC.Models;
 using BookStoreMVC.Data;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-// Register
-builder.Services.AddTransient<FileUploadServices>();
-
+// Connect Db
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<BookDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
@@ -20,6 +13,10 @@ builder.Services.AddDbContext<BookDbContext>(options =>
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BookStoreMVCContext>();
 
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
