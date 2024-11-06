@@ -2,88 +2,91 @@ using BookStoreMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using BookStoreMVC.Data;
 using BookStoreMVC.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreMVC.Controllers {
     public class BookController : Controller
     {
         private readonly BookDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public BookController (BookDbContext context)
+        public BookController (IConfiguration configuration, BookDbContext context)
         {
             _context = context;
+            _configuration = configuration;
         }
 
-        public IActionResult Details(BookViewModel vm)
+        [HttpGet]
+        public async Task<IActionResult> Details(BookViewModel vm)
         {
-            vm.FileBooks = new List<FileBook>();
+            vm.FileBooks = await _context.Files.ToListAsync();
             return View(vm);
         }
 
-        // [HttpPost]
-        // public IActionResult UploadFile(BookViewModel vm, IFormFile file)
-        // {
-        //     var fileName = $"{file.FileName}_{DateTime.Now.ToString("yyyymmddhhmmss")}";
-        //     var uploadFile = new FileBook
-        //     {
-        //         Name = fileName,
-        //         Type = file.ContentType,
-        //         Description = vm.Description,
-        //         UploadBy = vm.UploadBy,
-        //         UploadedDate = DateTime.Now,
-        //         Path = vm.Path,
-        //         Extension = Path.GetExtension(file.FileName),
-        //     };
-        // }
-
         [HttpPost]
-        public async Task<IActionResult> Details(IFormFile file)//, Book book)
+        public async Task<IActionResult> UploadFile(BookViewModel vm, IFormFile file)
         {
-            string path = Path.Combine(Environment.CurrentDirectory, "AllFiles");
-
-            try {
-                bool flag = false;
-                string sanitizedFileName = string.Join("_", file.FileName.Split(Path.GetInvalidFileNameChars()));
-
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                string fullPath = Path.Combine(path, sanitizedFileName);
-
-                using (var filestream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await file.CopyToAsync(filestream);
-                }
-                flag = true;
-                if (flag)
-                {
-                    ViewBag.Message = "File Uploaded Successfully";
-                } else {
-                    ViewBag.Message = "File uploaded Failed";
-                }
-
-                var fileDetails = new FileBook
-                {
-                    Name = file.FileName,
-                    Path = path,
-                    UploadedDate = DateTime.Now
-                };
-
-                _context.Files.Add(fileDetails);
-                await _context.SaveChangesAsync();
-
-                // book.FileDetailsId = fileDetails.Id;
-                // _context.Book.Add(book);
-                // await _context.SaveChangesAsync();
-
+            if (file == null || vm == null)
+            {
                 return RedirectToAction("Details", "Book");
             }
-            catch (Exception ex)
+
+            var fileName = DateTime.Now.ToString("yyyymmddhhmmss");
+            fileName = fileName + "_" + file.FileName;
+            var path = $"{_configuration.GetSection("FileManagement:SystemFileUpload").Value}"; // Path existing in appsettings.json
+            //var path = Path.Combine(Environment.CurrentDirectory, "AllFiles");
+
+            if (!Directory.Exists(path))
             {
-                ViewBag.Message = "File uploaded Failed" + ex.Message;
-                return View();
+                Directory.CreateDirectory(path);
             }
+
+            var filepath = Path.Combine(path, fileName);
+            
+            var fileExtension = Path.GetExtension(fileName);
+            var fileWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+
+            //save file to the folder
+            var stream = new FileStream(filepath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            var uploadFile = new FileBook
+            {
+                Name = fileName,
+                Type = file.ContentType,
+                Extension = fileExtension,
+                Description = vm.Description,
+                UploadBy = "Darkchan",
+                UploadedDate = DateTime.Now,
+                Path = filepath
+            };
+
+            await _context.AddAsync(uploadFile);
+            await _context.SaveChangesAsync();
+
+            //return View(vm);
+            return RedirectToAction("Details", "Book");
+        }
+
+        public async Task<ActionResult> Download (string fileName, string type)
+        {
+            if (fileName == null)
+            {
+                return Content("filename is not availble");
+            }
+
+            string name = fileName.Substring(fileName.IndexOf('_') + 1);
+
+            var path = $"{_configuration.GetSection("FileManagement:SystemFileUpload").Value}"; // Path existing in appsettings.json
+            //var path = Path.Combine(Environment.CurrentDirectory, "AllFiles");
+            var filepath = Path.Combine(path, fileName);
+
+            var memory = new MemoryStream();
+            var stream = new FileStream(filepath, FileMode.Open);
+            await stream.CopyToAsync(memory);
+            memory.Position = 0;
+
+            return File(memory, type, name);
         }
     }
 }
