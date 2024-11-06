@@ -19,21 +19,21 @@ namespace BookStoreMVC.Controllers {
             return View(vm);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UploadFile(BookViewModel vm, IFormFile file)
-        {
-            var fileName = $"{file.FileName}_{DateTime.Now.ToString("yyyymmddhhmmss")}";
-            var uploadFile = new FileBook
-            {
-                Name = fileName,
-                Type = file.ContentType,
-                Extension = Path.GetExtension(file.FileName),
-                Description = vm.Description,
-                UploadBy = vm.UploadBy,
-                UploadedDate = DateTime.Now,
-                Path = vm.FilePath
-            };
-        }
+        // [HttpPost]
+        // public IActionResult UploadFile(BookViewModel vm, IFormFile file)
+        // {
+        //     var fileName = $"{file.FileName}_{DateTime.Now.ToString("yyyymmddhhmmss")}";
+        //     var uploadFile = new FileBook
+        //     {
+        //         Name = fileName,
+        //         Type = file.ContentType,
+        //         Description = vm.Description,
+        //         UploadBy = vm.UploadBy,
+        //         UploadedDate = DateTime.Now,
+        //         Path = vm.Path,
+        //         Extension = Path.GetExtension(file.FileName),
+        //     };
+        // }
 
         [HttpPost]
         public async Task<IActionResult> Details(IFormFile file)//, Book book)
