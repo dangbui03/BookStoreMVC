@@ -28,7 +28,7 @@
     <p>No files available.</p>
 }
 else {
-<table class="table table-striped table-bordered table-hover">
+    <table class="table table-striped border-collapse border border-slate-500 table-hover">
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(Model => Model.Id)</th>
@@ -37,6 +37,7 @@ else {
             <th>@Html.DisplayNameFor(Model => Model.Type)</th>
             <th>@Html.DisplayNameFor(Model => Model.Description)</th>
             <th>@Html.DisplayNameFor(Model => Model.UploadedDate)</th>
+            <th>Download</th>
         </tr>
     </thead>
     <tbody>
@@ -49,31 +50,16 @@ else {
                 <th>@fileBook.Type</th>
                 <th>@fileBook.Description</th>
                 <th>@fileBook.UploadedDate</th>
+                <th>
+                    <a asp-action="Download" asp-route-fileName="@fileBook.Name" asp-route-type="@fileBook.Type"
+                        class="p-2 text-dark bg-white border border-dark rounded text-decoration-none"    
+                    >
+                            Download
+                    </a>
+                </th>
             </tr>
         }
     </tbody>
 </table> 
 }
-<!-- List of Files -->
-
-@*
-
-<h3>Files</h3>
-@if (Model.FileBooks.Count == 0)
-{
-    <p>No files available.</p>
-}
-else {
-    <ul>
-        @foreach (var fileBook in Model.FileBooks)
-        {
-            <li>
-                @fileBook.Name
-                <a asp-action="Download" asp-route-id="@fileBook.Id">Download</a>
-            </li>
-        }
-    </ul>
-}
-
-*@
 
