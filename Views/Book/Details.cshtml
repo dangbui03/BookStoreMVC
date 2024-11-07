@@ -38,6 +38,7 @@ else {
             <th>@Html.DisplayNameFor(Model => Model.Description)</th>
             <th>@Html.DisplayNameFor(Model => Model.UploadedDate)</th>
             <th>Download</th>
+            <th>View file</th>
         </tr>
     </thead>
     <tbody>
@@ -55,6 +56,13 @@ else {
                         class="p-2 text-dark bg-white border border-dark rounded text-decoration-none"    
                     >
                             Download
+                    </a>
+                </th>
+                <th>
+                    <a id="pdf_container" asp-action="ViewFile" asp-route-fileName="@fileBook.Name" 
+                        class="p-2 text-dark bg-white border border-dark rounded text-decoration-none"    
+                    >
+                            View
                     </a>
                 </th>
             </tr>
