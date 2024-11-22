@@ -91,6 +91,31 @@ namespace BookStoreMVC.Controllers {
             return File(memory, type, name);
         }
 
+        public async Task<ActionResult> Delete(string fileName)
+        {
+            if (fileName == null)
+            {
+                return Content("filename is not availble");
+            }
+
+            string name = fileName.Substring(fileName.IndexOf('_') + 1);
+
+            var path = $"{_configuration.GetSection("FileManagement:SystemFileUpload").Value}"; // Path existing in appsettings.json
+            //var path = Path.Combine(Environment.CurrentDirectory, "AllFiles");
+            var filepath = Path.Combine(path, fileName);
+
+            if (System.IO.File.Exists(filepath))
+            {
+                System.IO.File.Delete(filepath);
+            }
+
+            var file = await _context.Files.FirstOrDefaultAsync(f => f.Name == fileName);
+            _context.Files.Remove(file);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "Book");
+        }
+
         public async Task<ActionResult> viewFile(string fileName)
         {
             if (fileName == null)

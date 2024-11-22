@@ -10,7 +10,7 @@ namespace BookStoreMVC.Models
         public string Name { get; set; }   // Tên file
 
         [Display(Name = "File Type")]
-        public string Type { get; set; }   // Loại file
+        public string Type { get; set; }   // Loại file // enum
 
         [Display(Name = "File Extension")]
         public string Extension { get; set; }
