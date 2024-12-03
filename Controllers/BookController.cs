@@ -1,10 +1,11 @@
-using BookStoreMVC.Models;
+﻿using BookStoreMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using BookStoreMVC.Data;
 using BookStoreMVC.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using GroupDocs.Viewer.Options;
 using GroupDocs.Viewer;
+using SrvnPortal.Helpers;
 
 namespace BookStoreMVC.Controllers {
     public class BookController : Controller
@@ -28,39 +29,36 @@ namespace BookStoreMVC.Controllers {
         [HttpPost]
         public async Task<IActionResult> UploadFile(BookViewModel vm, IFormFile file)
         {
+            #region validate data
             if (file == null || vm == null)
             {
                 return RedirectToAction("Details", "Book");
             }
+            #endregion
 
-            var fileName = DateTime.Now.ToString("yyyymmddhhmmss");
-            fileName = fileName + "_" + file.FileName;
-            var path = $"{_configuration.GetSection("FileManagement:SystemFileUpload").Value}"; // Path existing in appsettings.json
-            //var path = Path.Combine(Environment.CurrentDirectory, "AllFiles");
-
-            if (!Directory.Exists(path))
+            var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            var allowedExtensions = new[] { ".docx", ".txt", ".pdf", ".xlxs", ".doc", ".xls", ".ppt", ".csv", ".pptx" };
+            if (string.IsNullOrEmpty(fileExtension) || !allowedExtensions.Contains(fileExtension))
             {
-                Directory.CreateDirectory(path);
+                return RedirectToAction("Details", "Book");
             }
 
-            var filepath = Path.Combine(path, fileName);
+            //var fileName = DateTime.Now.ToString("yyyymmddhhmmss");
+            //fileName = fileName + "_" + file.FileName;
+            //var path = $"{_configuration.GetSection("FileManagement:SystemFileUpload").Value}"; // Path existing in appsettings.json
+            var path = Path.Combine(Environment.CurrentDirectory, "AllFiles");
 
-            var fileExtension = Path.GetExtension(fileName);
-            var fileWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-
-            //save file to the folder
-            var stream = new FileStream(filepath, FileMode.Create);
-            await file.CopyToAsync(stream);
+            var new_name = await FileMgr.UploadFile(file, path);
 
             var uploadFile = new FileBook
             {
-                Name = fileName,
+                Name = new_name,
                 Type = file.ContentType,
                 Extension = fileExtension,
                 Description = vm.Description,
                 UploadBy = "Darkchan",
                 UploadedDate = DateTime.Now,
-                Path = filepath
+                Path = path
             };
 
             await _context.AddAsync(uploadFile);
@@ -77,18 +75,31 @@ namespace BookStoreMVC.Controllers {
                 return Content("filename is not availble");
             }
 
-            string name = fileName.Substring(fileName.IndexOf('_') + 1);
+            string[] parts = fileName.Split('_');
+            string extension = Path.GetExtension(fileName);
+            string name = parts[0] + extension;
 
-            var path = $"{_configuration.GetSection("FileManagement:SystemFileUpload").Value}"; // Path existing in appsettings.json
-            //var path = Path.Combine(Environment.CurrentDirectory, "AllFiles");
+            //var path = $"{_configuration.GetSection("FileManagement:SystemFileUpload").Value}"; // Path existing in appsettings.json
+            var path = Path.Combine(Environment.CurrentDirectory, "AllFiles");
             var filepath = Path.Combine(path, fileName);
 
-            var memory = new MemoryStream();
-            var stream = new FileStream(filepath, FileMode.Open);
-            await stream.CopyToAsync(memory);
-            memory.Position = 0;
+            //var memory = new MemoryStream();
+            //var stream = new FileStream(filepath, FileMode.Open);
+            //await stream.CopyToAsync(memory);
+            //memory.Position = 0;
 
-            return File(memory, type, name);
+            //return File(memory, type, name);
+            // Mở file stream để đọc file
+            using (var stream = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                // Tạo memory stream để lưu file
+                var memory = new MemoryStream();
+                await stream.CopyToAsync(memory);
+                memory.Position = 0; // Reset position to the start of the stream
+
+                // Trả về file với định dạng file hợp đồng
+                return File(memory, type, name);
+            }
         }
 
         public async Task<ActionResult> Delete(string fileName)
@@ -100,8 +111,8 @@ namespace BookStoreMVC.Controllers {
 
             string name = fileName.Substring(fileName.IndexOf('_') + 1);
 
-            var path = $"{_configuration.GetSection("FileManagement:SystemFileUpload").Value}"; // Path existing in appsettings.json
-            //var path = Path.Combine(Environment.CurrentDirectory, "AllFiles");
+            //var path = $"{_configuration.GetSection("FileManagement:SystemFileUpload").Value}"; // Path existing in appsettings.json
+            var path = Path.Combine(Environment.CurrentDirectory, "AllFiles");
             var filepath = Path.Combine(path, fileName);
 
             if (System.IO.File.Exists(filepath))
@@ -125,9 +136,9 @@ namespace BookStoreMVC.Controllers {
 
             string name = fileName.Substring(fileName.IndexOf('_') + 1);
 
-            var path = $"{_configuration.GetSection("FileManagement:SystemFileUpload").Value}"; // Path existing in appsettings.json
+            //var path = $"{_configuration.GetSection("FileManagement:SystemFileUpload").Value}"; // Path existing in appsettings.json
             var path2 = Path.Combine(Environment.CurrentDirectory, "AllFiles");
-            var filepath = Path.Combine(path, fileName);
+            var filepath = Path.Combine(path2, fileName);
 
             //Viewer viewer = new Viewer(filepath); //(path + "\\" + fileName);
             //PdfViewOptions options = new PdfViewOptions();
