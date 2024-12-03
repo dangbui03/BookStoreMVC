@@ -1,0 +1,51 @@
+@model BookStoreMVC.ViewModels.BookViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<!-- Upload File Form -->
+<!-- Load jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Load jqGrid -->
+<script src="https://cdn.jsdelivr.net/npm/jqgrid/js/i18n/grid.locale-en.js"></script>  <!-- Optional: Locale for jqGrid -->
+<script src="https://cdn.jsdelivr.net/npm/jqgrid/js/jquery.jqGrid.min.js"></script>
+
+<!-- Load jqGrid CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jqgrid/css/ui.jqgrid.css" />
+<div class="col-md-12">
+    <form method="post" asp-controller="Book" asp-action="UploadFile" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-6">
+                <label asp-for="Name"></label>
+                <input type="file" name="file" class="form-control" multiple accept=".docx, .pdf, .txt "/>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Description"></label>
+                <input type="text" asp-for="Description" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary mt-5">Upload File</button>
+            </div>
+        </div>
+    </form>
+</div>
+<hr/>
+@if (Model.FileBooks.Count == 0)
+{
+    <p>No files available.</p>
+}
+else {
+    <div>table here</div>
+    <table id="fileGrid"></table>
+    <div id="filePager"></div>
+}
+
+@section Scripts {
+    <environment include="Development">
+        <script type="text/javascript" src="~/js/book.Index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script type="text/javascript" src="~/js/book.Index.min.js" asp-append-version="true"></script>
+    </environment>
+}

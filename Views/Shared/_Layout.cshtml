@@ -8,6 +8,16 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BookStoreMVC.styles.css" asp-append-version="true" />
     <Link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Load jqGrid -->
+    <script src="https://cdn.jsdelivr.net/npm/jqgrid/js/i18n/grid.locale-en.js"></script>  <!-- Optional: Locale for jqGrid -->
+    <script src="https://cdn.jsdelivr.net/npm/jqgrid/js/jquery.jqGrid.min.js"></script>
+
+    <!-- Load jqGrid CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jqgrid/css/ui.jqgrid.css" />
+
 </head>
 <body>
     <header class="bg-white top-0 w-full shadow-lg">
@@ -17,7 +27,7 @@
                     <a class="text-xl md:text-2xl font-bold text-gray-800" asp-area="" asp-controller="Home" asp-action="Index">AI Learner</a>
                     <div class="hidden md:flex gap-3 md:gap-5"> 
                         <a class="text-gray-800 hover:text-blue-800" asp-area="" asp-controller="Employee" asp-action="Index">Employee</a>
-                        <a class="text-gray-800 hover:text-blue-800" asp-area="" asp-controller="Book" asp-action="Details">Book</a>
+                        <a class="text-gray-800 hover:text-blue-800" asp-area="" asp-controller="Book" asp-action="Index">Book</a>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4 ">

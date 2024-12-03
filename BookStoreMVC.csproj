@@ -6,6 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="bundleconfig.json" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<UpToDateCheckBuilt Include="wwwroot/css/site.css" Set="Css" />
 		<UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
@@ -13,6 +17,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="GroupDocs.Viewer" Version="24.10.0" />
+	  <PackageReference Include="jQuery.jqGrid" Version="4.4.4" />
 	  <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.10" />
 	  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
 	  <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.10" />
@@ -35,6 +40,10 @@
 
 	<ItemGroup>
 	  <Folder Include="AllFiles\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="bundleconfig.json" />
 	</ItemGroup>
 
 	<Target Name="Tailwind" BeforeTargets="Build">

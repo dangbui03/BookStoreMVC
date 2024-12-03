@@ -20,10 +20,49 @@ namespace BookStoreMVC.Controllers {
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(BookViewModel vm)
+        public async Task<IActionResult> Index(BookViewModel vm)
         {
             vm.FileBooks = await _context.Files.ToListAsync();
             return View(vm);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFileBooks(int page = 1, int rows = 10)
+        {
+            // Fetch the list of FileBooks from the database asynchronously
+            var fileBooks = await _context.Files.ToListAsync();
+
+            // Pagination logic (calculating total records and pages)
+            var totalRecords = fileBooks.Count();
+            var totalPages = (int)Math.Ceiling((double)totalRecords / rows);
+
+            // Fetch the data for the current page
+            var result = fileBooks
+                .Skip((page - 1) * rows)
+                .Take(rows)
+                .ToList();
+
+            // Return the data in JSON format for jqGrid
+            return Json(new
+            {
+                page = page,
+                total = totalPages,
+                records = totalRecords,
+                rows = result.Select(f => new
+                {
+                    id = f.Id,
+                    cell = new object[] {
+                        f.Id,                    // ID
+                        f.Name,                  // File Name
+                        f.Type,                  // File Type
+                        f.Extension,             // File Extension
+                        f.Description,           // Description
+                        f.UploadBy,              // Uploaded By
+                        f.Path,                  // Path
+                        f.UploadedDate.ToString("yyyy-MM-dd") // Uploaded Date
+                    }
+                }).ToList()
+            });
         }
 
         [HttpPost]
