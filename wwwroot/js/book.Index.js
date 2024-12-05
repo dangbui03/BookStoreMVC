@@ -1,9 +1,16 @@
-﻿const initJqGrid = () => {
+﻿const fileGrid = document.querySelector("#fileGrid");
+const filePager = document.querySelector("#filePager");
+
+const initJqGrid = () => {
+    console.log("hi")
     $("#fileGrid").jqGrid({
-        url: '/Book/GetFileBooks', // URL updated to match subfolder structure
+        url: '/Book/GetData', // URL updated to match subfolder structure
         datatype: 'json',
         mtype: 'GET',
-        colNames: ['ID', 'File Name', 'File Type', 'File Extension', 'Description', 'Uploaded By', 'Path', 'Uploaded Date'],
+        colNames: [
+            'ID', 'File Name', 'File Type', 'File Extension',
+            'Description', 'Uploaded By', 'Path', 'Uploaded Date'
+        ],
         colModel: [
             { name: 'Id', index: 'Id', width: 50, align: 'center' },
             { name: 'Name', index: 'Name', width: 200 },
@@ -21,10 +28,14 @@
         viewrecords: true,
         sortorder: "asc",
         gridview: true,
-        caption: "File Books"
+        caption: "File Books",
+        loadError: (xhr, status, error) => {
+            console.log("Error loading data: " + error);
+        }
     });
 };
 
-$(document).ready(() => {
+// Initialize jqGrid when the document is ready
+document.addEventListener("DOMContentLoaded", () => {
     initJqGrid();
 });

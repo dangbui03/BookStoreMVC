@@ -6,8 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using GroupDocs.Viewer.Options;
 using GroupDocs.Viewer;
 using SrvnPortal.Helpers;
+using Newtonsoft.Json;
+//using System.Web.Mvc;
 
-namespace BookStoreMVC.Controllers {
+namespace BookStoreMVC.Controllers
+{
     public class BookController : Controller
     {
         private readonly BookDbContext _context;
@@ -26,44 +29,51 @@ namespace BookStoreMVC.Controllers {
             return View(vm);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetFileBooks(int page = 1, int rows = 10)
+        public async string GetData()
         {
-            // Fetch the list of FileBooks from the database asynchronously
-            var fileBooks = await _context.Files.ToListAsync();
-
-            // Pagination logic (calculating total records and pages)
-            var totalRecords = fileBooks.Count();
-            var totalPages = (int)Math.Ceiling((double)totalRecords / rows);
-
-            // Fetch the data for the current page
-            var result = fileBooks
-                .Skip((page - 1) * rows)
-                .Take(rows)
-                .ToList();
-
-            // Return the data in JSON format for jqGrid
-            return Json(new
-            {
-                page = page,
-                total = totalPages,
-                records = totalRecords,
-                rows = result.Select(f => new
-                {
-                    id = f.Id,
-                    cell = new object[] {
-                        f.Id,                    // ID
-                        f.Name,                  // File Name
-                        f.Type,                  // File Type
-                        f.Extension,             // File Extension
-                        f.Description,           // Description
-                        f.UploadBy,              // Uploaded By
-                        f.Path,                  // Path
-                        f.UploadedDate.ToString("yyyy-MM-dd") // Uploaded Date
-                    }
-                }).ToList()
-            });
+            var fileBooks = _context.Files.ToListAsync();
+            //return Json(new { rows = fileBooks }, System.Web.Mvc.JsonRequestBehavior.AllowGet);
+            var result = JsonConvert.SerializeObject(new { data = fileBooks });
+            return result;
         }
+        //[HttpGet]
+        //public async Task<IActionResult> GetFileBooks(int page = 1, int rows = 10)
+        //{
+        //    // Fetch the list of FileBooks from the database asynchronously
+        //    var fileBooks = await _context.Files.ToListAsync();
+
+        //    // Pagination logic (calculating total records and pages)
+        //    var totalRecords = fileBooks.Count();
+        //    var totalPages = (int)Math.Ceiling((double)totalRecords / rows);
+
+        //    // Fetch the data for the current page
+        //    var result = fileBooks
+        //        .Skip((page - 1) * rows)
+        //        .Take(rows)
+        //        .ToList();
+
+        //    // Return the data in JSON format for jqGrid
+        //    return Json(new
+        //    {
+        //        page = page,
+        //        total = totalPages,
+        //        records = totalRecords,
+        //        rows = result.Select(f => new
+        //        {
+        //            id = f.Id,
+        //            cell = new object[] {
+        //                f.Id,                    // ID
+        //                f.Name,                  // File Name
+        //                f.Type,                  // File Type
+        //                f.Extension,             // File Extension
+        //                f.Description,           // Description
+        //                f.UploadBy,              // Uploaded By
+        //                f.Path,                  // Path
+        //                f.UploadedDate.ToString("yyyy-MM-dd") // Uploaded Date
+        //            }
+        //        }).ToList()
+        //    });
+        //}
 
         [HttpPost]
         public async Task<IActionResult> UploadFile(BookViewModel vm, IFormFile file)
@@ -71,7 +81,7 @@ namespace BookStoreMVC.Controllers {
             #region validate data
             if (file == null || vm == null)
             {
-                return RedirectToAction("Details", "Book");
+                return RedirectToAction("Index", "Book");
             }
             #endregion
 
@@ -79,7 +89,7 @@ namespace BookStoreMVC.Controllers {
             var allowedExtensions = new[] { ".docx", ".txt", ".pdf", ".xlxs", ".doc", ".xls", ".ppt", ".csv", ".pptx" };
             if (string.IsNullOrEmpty(fileExtension) || !allowedExtensions.Contains(fileExtension))
             {
-                return RedirectToAction("Details", "Book");
+                return RedirectToAction("Index", "Book");
             }
 
             //var fileName = DateTime.Now.ToString("yyyymmddhhmmss");
@@ -104,7 +114,7 @@ namespace BookStoreMVC.Controllers {
             await _context.SaveChangesAsync();
 
             //return View(vm);
-            return RedirectToAction("Details", "Book");
+            return RedirectToAction("Index", "Book");
         }
 
         public async Task<ActionResult> Download(string fileName, string type)
@@ -163,7 +173,7 @@ namespace BookStoreMVC.Controllers {
             _context.Files.Remove(file);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Details", "Book");
+            return RedirectToAction("Index", "Book");
         }
 
         public async Task<ActionResult> viewFile(string fileName)
